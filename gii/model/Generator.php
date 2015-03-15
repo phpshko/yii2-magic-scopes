@@ -8,6 +8,7 @@
 namespace phpshko\magicscopes\gii\model;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This generator will generate one or multiple ActiveRecord classes for the specified database table.
@@ -17,8 +18,7 @@ use Yii;
  */
 class Generator extends \yii\gii\generators\model\Generator
 {
-    public $generateMagicScopes = true;
-
+    public $generateMagicScopes = false;
 
     protected $methodNames = [
         '*', '*In', '*Like', '*Between', '*More', '*Less',
@@ -29,6 +29,15 @@ class Generator extends \yii\gii\generators\model\Generator
         'or*NotIn', 'or*NotLike', 'or*NotBetween', 'or*NotMore', 'or*NotLess', 'or*'
     ];
 
+
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return ArrayHelper::merge(parent::rules(),
+            [[['generateMagicScopes'], 'boolean']]);
+    }
 
     /**
      * @param string $columnName
@@ -46,12 +55,16 @@ class Generator extends \yii\gii\generators\model\Generator
             $varName = lcfirst($columnName);
 
             if (stristr($template, 'between')) {
-                $docs[] = ' * @method ActiveQuery|' . $this->modelClass . ' ' . $methodName . '($from, $to)';
+                $signature = '($from, $to)';
+            } elseif (stristr($template, 'in')) {
+                $signature = '($array)';
             } elseif(stristr($template, 'less') || stristr($template, 'more')){
-                $docs[] = ' * @method ActiveQuery|' . $this->modelClass . ' ' . $methodName . '($than, $include = false)';
+                $signature = '($than, $include = false)';
             } else {
-                $docs[] = ' * @method ActiveQuery|' . $this->modelClass . ' ' . $methodName . '($' . $varName . ')';
+                $signature = '($' . $varName . ')';
             }
+
+            $docs[] = ' * @method ActiveQuery|' . $this->modelClass . ' ' . $methodName . $signature;
         }
 
         return $docs;
