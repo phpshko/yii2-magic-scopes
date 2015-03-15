@@ -1,0 +1,27 @@
+{
+  "name": "phpshko/yii2-magic-scopes",
+  "description": "Yii2 behavior for query magic scopes",
+  "type": "yii2-extension",
+  "keywords": [
+    "yii2",
+    "extension"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Zinchencko Ruslan",
+      "email": "zinchenckoruslan@gmail.com"
+    }
+  ],
+  "require": {
+    "yiisoft/yii2": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "phpshko\\magicscopes\\": ""
+    }
+  },
+  "extra": {
+    "bootstrap": "phpshko\\magicscopes\\Bootstrap"
+  }
+}
