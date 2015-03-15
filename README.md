@@ -27,7 +27,7 @@ Configuration
 Overwrite find (default in Gii generator)
 ----
 
-```
+```php
 use phpshko\magicscopes\ActiveQuery;
 
 ...
@@ -45,7 +45,7 @@ public static function find()
 Or in ActiveQuery
 ----
 
-```
+```php
 namespace phpshko\magicscopes;
 
 class ActiveQuery extends \yii\db\ActiveQuery
