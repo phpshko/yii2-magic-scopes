@@ -64,7 +64,7 @@ class Generator extends \yii\gii\generators\model\Generator
                 $signature = '($' . $varName . ')';
             }
 
-            $docs[] = ' * @method ActiveQuery|' . $this->modelClass . ' ' . $methodName . $signature;
+            $docs[] = ' * @method MagicActiveQuery|' . $this->modelClass . ' ' . $methodName . $signature;
         }
 
         return $docs;
