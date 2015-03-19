@@ -27,26 +27,25 @@ Configuration
 Overwrite find (default in Gii generator)
 ----
 
-```
-use phpshko\magicscopes\ActiveQuery;
+```php
+use phpshko\magicscopes\MagicActiveQuery;
 
 ...
 
 /**
  * @inheritdoc
- * @return ActiveQuery|ModelClass
+ * @return MagicActiveQuery|ModelClass
  */
 public static function find()
 {
-    return new ActiveQuery(get_called_class());
+    return new MagicActiveQuery(get_called_class());
 }
 ```
     
 Or in ActiveQuery
 ----
 
-```
-namespace phpshko\magicscopes;
+```php
 
 class ActiveQuery extends \yii\db\ActiveQuery
 {
@@ -57,7 +56,7 @@ class ActiveQuery extends \yii\db\ActiveQuery
     {
         return [
             [
-                'class' => MagicScopesBehavior::className()
+                'class' => phpshko\magicscopes\MagicActiveQuery::className()
             ]
         ];
     }
@@ -83,14 +82,14 @@ When you will generate Model in Gii generator, select "Generate Magic Scopes". W
  *
  * Magic Scopes
  *
- * @method ActiveQuery|UserWith id($id)
- * @method ActiveQuery|UserWith idIn($id)
- * @method ActiveQuery|UserWith idLike($id)
- * @method ActiveQuery|UserWith idBetween($from, $to)
- * @method ActiveQuery|UserWith idMore($than, $include = false)
- * @method ActiveQuery|UserWith idLess($than, $include = false)
- * @method ActiveQuery|UserWith idNot($id)
- * @method ActiveQuery|UserWith idNotIn($id)
+ * @method MagicActiveQuery|UserWith id($id)
+ * @method MagicActiveQuery|UserWith idIn($id)
+ * @method MagicActiveQuery|UserWith idLike($id)
+ * @method MagicActiveQuery|UserWith idBetween($from, $to)
+ * @method MagicActiveQuery|UserWith idMore($than, $include = false)
+ * @method MagicActiveQuery|UserWith idLess($than, $include = false)
+ * @method MagicActiveQuery|UserWith idNot($id)
+ * @method MagicActiveQuery|UserWith idNotIn($id)
  */
 ```
 

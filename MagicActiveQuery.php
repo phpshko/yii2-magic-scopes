@@ -3,7 +3,7 @@
 namespace phpshko\magicscopes;
 
 
-class ActiveQuery extends \yii\db\ActiveQuery
+class MagicActiveQuery extends \yii\db\ActiveQuery
 {
     /**
      * @inheritdoc

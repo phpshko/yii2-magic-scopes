@@ -4,6 +4,7 @@ namespace phpshko\magicscopes;
 
 use Yii;
 use yii\base\Behavior;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\console\Exception;
 
@@ -13,10 +14,9 @@ use yii\console\Exception;
 class MagicScopesBehavior extends Behavior
 {
     /**
-     * @var \yii\db\ActiveQuery $owner
+     * @var ActiveQuery $owner
      */
     public $owner;
-    public $useCache = true;
 
     protected static $cacheAttributes = [];
 
@@ -41,6 +41,23 @@ class MagicScopesBehavior extends Behavior
 
 
     /**
+     * @inheritdoc
+     */
+    public function events()
+    {
+        return [
+            ActiveQuery::EVENT_INIT => 'afterInit'
+        ];
+    }
+
+
+    public function afterInit()
+    {
+        $this->cacheSchema($this->owner->modelClass);
+    }
+
+
+    /**
      * @param string $name
      * @return bool
      */
@@ -54,11 +71,71 @@ class MagicScopesBehavior extends Behavior
     /**
      * @param string $name
      * @param array $params
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function __call($name, $params)
     {
-        $parse = $this->parseMethodName($name);
+        return $this->buildQuery($name, $params);
+    }
+
+    /**
+     * @param ActiveRecord|string $className
+     */
+    public function cacheSchema($className)
+    {
+        if (!isset(self::$cacheAttributes[$className])) {
+            $tmp = [];
+            foreach ($className::getTableSchema()->getColumnNames() as $attributeName) {
+                $tmp[$this->cleanString($attributeName)] = $attributeName;
+            }
+
+            self::$cacheAttributes[$className] = $tmp;
+        }
+    }
+
+
+    /**
+     * @param string $type
+     * @param string $params
+     * @throws \yii\base\Exception
+     */
+    public function validate($type, $params)
+    {
+        switch($type){
+            case 'equal':
+            case 'more':
+            case 'less':
+            case 'like':
+                if(!is_int($params[0]) && !is_string($params[0])){
+                    throw new \InvalidArgumentException('Parameter should be string or integer. ' . gettype($params[0]) . ' given');
+                }
+                break;
+            case 'in':
+                if(!is_array($params[0])){
+                    throw new \InvalidArgumentException('Parameter should be array. ' . gettype($params[0]) . ' given');
+                }
+                break;
+            case 'between':
+                if((!is_int($params[0]) && !is_string($params[0])) || (!is_int($params[1]) && !is_string($params[1]))){
+                    throw new \InvalidArgumentException('Both parameters should be string or integer.');
+                }
+                break;
+        }
+    }
+
+
+    /**
+     * @param $methodName
+     * @param $params
+     * @return ActiveQuery
+     * @throws Exception
+     */
+    public function buildQuery($methodName, $params)
+    {
+        $parse = $this->parseMethodName($methodName);
+
+        $this->validate($parse['type'], $params);
+
         $whereMethod = $parse['or'] ? 'orWhere' : 'andWhere';
         $not = $parse['not'] ? 'not ' : '';
         $columnName = $this->getAttributeName($this->owner->modelClass, $parse['attribute']);
@@ -103,15 +180,6 @@ class MagicScopesBehavior extends Behavior
      */
     protected function getCleanAttributes($className)
     {
-        if (!$this->useCache || !isset(self::$cacheAttributes[$className])) {
-            $tmp = [];
-            foreach ($className::getTableSchema()->getColumnNames() as $attributeName) {
-                $tmp[$this->cleanString($attributeName)] = $attributeName;
-            }
-
-            self::$cacheAttributes[$className] = $tmp;
-        }
-
         return self::$cacheAttributes[$className];
     }
 
