@@ -6,6 +6,21 @@ use yii\db\ActiveQuery;
 
 class MagicScopesTest extends \yii\codeception\TestCase
 {
+    public $appConfig = 'config/unit.php';
+
+    protected function setUp()
+    {
+        $this->mockApplication();
+        $this->unloadFixtures();
+        $this->loadFixtures();
+    }
+
+    protected function tearDown()
+    {
+        $this->destroyApplication();
+    }
+
+
     /**
      * @var \UnitTester
      */
@@ -54,7 +69,7 @@ class MagicScopesTest extends \yii\codeception\TestCase
 
     public function testIn()
     {
-        $array = [1,2,3,4,5];
+        $array = [1, 2, 3, 4, 5];
 
         $queryWith = UserWith::find()->andAddressIdIn($array);
         $queryWithout = UserWithout::find()->andWhere(['address_id' => $array]);

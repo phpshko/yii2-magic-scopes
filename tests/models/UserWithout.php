@@ -3,7 +3,7 @@ namespace phpshko\magicscopes\tests\models;
 
 use Yii;
 
-use app\components\ActiveRecord;
+use yii\db\ActiveRecord;
 
 /**
  * User model
