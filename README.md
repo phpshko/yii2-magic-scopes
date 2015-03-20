@@ -1,5 +1,7 @@
-Yii2 behavior for ActiveQuery magic scopes
+Yii2 behavior for ActiveQuery Magic Scopes
 ===========
+
+This behavior help you avoid creating QueryClass for your model, if you need only a simple scopes.
 
 Installation
 ------------
