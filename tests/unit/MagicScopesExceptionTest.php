@@ -1,6 +1,6 @@
 <?php
 
-use phpshko\magicscopes\tests\models\UserWith;
+use phpshko\magicscopes\tests\unit\models\UserWith;
 
 class MagicScopesExceptionTest extends \yii\codeception\TestCase
 {
@@ -37,7 +37,6 @@ class MagicScopesExceptionTest extends \yii\codeception\TestCase
 
     /**
      * @expectedException        Exception
-     * @expectedExceptionMessage not found in the model
      */
     public function testNoneAttribute()
     {

@@ -20,39 +20,13 @@ class MagicScopesBehavior extends Behavior
 
     protected static $cacheAttributes = [];
 
-    /**
-     * @param string $name
-     * @return array
-     */
-    public function parseMethodName($name)
-    {
-        $name = strtolower($name);
-
-        preg_match('/^(or|and|)(.*)(not|)(in|like|between|more|less|)$/iU', $name, $regs);
-
-        return [
-            'or' => $regs[1] === 'or',
-            'and' => $regs[1] !== 'or',
-            'attribute' => $regs[2],
-            'not' => $regs[3] === 'not',
-            'type' => $regs[4] ?: 'equal'
-        ];
-    }
-
 
     /**
      * @inheritdoc
      */
-    public function events()
+    public function attach($owner)
     {
-        return [
-            ActiveQuery::EVENT_INIT => 'afterInit'
-        ];
-    }
-
-
-    public function afterInit()
-    {
+        parent::attach($owner);
         $this->cacheSchema($this->owner->modelClass);
     }
 
@@ -91,6 +65,26 @@ class MagicScopesBehavior extends Behavior
 
             self::$cacheAttributes[$className] = $tmp;
         }
+    }
+
+
+    /**
+     * @param string $name
+     * @return array
+     */
+    public function parseMethodName($name)
+    {
+        $name = strtolower($name);
+
+        preg_match('/^(or|and|)(.*)(not|)(in|like|between|more|less|)$/iU', $name, $regs);
+
+        return [
+            'or' => $regs[1] === 'or',
+            'and' => $regs[1] !== 'or',
+            'attribute' => $regs[2],
+            'not' => $regs[3] === 'not',
+            'type' => $regs[4] ?: 'equal'
+        ];
     }
 
 
@@ -198,7 +192,7 @@ class MagicScopesBehavior extends Behavior
             return $attributes[$attributeName];
         }
 
-        throw new Exception('Attribute ' . $attributeName . ' not found in the model ' . $className);
+        return false;
     }
 
 

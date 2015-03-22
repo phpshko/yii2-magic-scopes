@@ -1,7 +1,7 @@
 <?php
 
-use phpshko\magicscopes\tests\models\UserWith;
-use phpshko\magicscopes\tests\models\UserWithout;
+use phpshko\magicscopes\tests\unit\models\UserWith;
+use phpshko\magicscopes\tests\unit\models\UserWithout;
 use yii\db\ActiveQuery;
 
 class MagicScopesTest extends \yii\codeception\TestCase

@@ -8,7 +8,6 @@
 namespace phpshko\magicscopes\gii\model;
 
 use Yii;
-use yii\helpers\ArrayHelper;
 
 /**
  * This generator will generate one or multiple ActiveRecord classes for the specified database table.
@@ -35,7 +34,7 @@ class Generator extends \yii\gii\generators\model\Generator
      */
     public function rules()
     {
-        return ArrayHelper::merge(parent::rules(),
+        return array_merge(parent::rules(),
             [[['generateMagicScopes'], 'boolean']]);
     }
 
@@ -64,7 +63,7 @@ class Generator extends \yii\gii\generators\model\Generator
                 $signature = '($' . $varName . ')';
             }
 
-            $docs[] = ' * @method MagicActiveQuery|' . $this->modelClass . ' ' . $methodName . $signature;
+            $docs[] = ' * @method ActiveQuery|' . $this->modelClass . ' ' . $methodName . $signature;
         }
 
         return $docs;

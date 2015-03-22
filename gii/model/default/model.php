@@ -18,7 +18,8 @@ echo "<?php\n";
 namespace <?= $generator->ns ?>;
 
 use Yii;
-use phpshko\magicscopes\MagicActiveQuery;
+use yii\db\ActiveQuery;
+use phpshko\magicscopes\MagicScopesBehavior;
 /**
  * This is the model class for table "<?= $generator->generateTableName($tableName) ?>".
  *
@@ -50,11 +51,13 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
 <?php if($generator->generateMagicScopes): ?>
     /**
     * @inheritdoc
-    * @return MagicActiveQuery|<?= $className ?>
+    * @return ActiveQuery|<?= $className . "\n" ?>
     */
     public static function find()
     {
-        return new MagicActiveQuery(get_called_class());
+        $query = parent::find();
+        $query->attachBehavior('MagicScopesBehavior', MagicScopesBehavior::className());
+        return $query;
     }
 <?php endif; ?>
     /**
