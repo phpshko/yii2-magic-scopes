@@ -30,6 +30,27 @@ Overwrite find (default in Gii generator)
 ----
 
 ```php
+use Yii;
+use yii\db\ActiveQuery;
+use phpshko\magicscopes\MagicScopesBehavior;
+...
+
+    /**
+    * @inheritdoc
+    * @return ActiveQuery|UserWith
+    */
+    public static function find()
+    {
+        $query = parent::find();
+        $query->attachBehavior('MagicScopesBehavior', MagicScopesBehavior::className());
+        return $query;
+    }
+```
+    
+Or use MagicActiveQuery
+----
+    
+```php
 use phpshko\magicscopes\MagicActiveQuery;
 
 ...
@@ -58,7 +79,7 @@ class ActiveQuery extends \yii\db\ActiveQuery
     {
         return [
             [
-                'class' => phpshko\magicscopes\MagicActiveQuery::className()
+                'class' => \phpshko\magicscopes\MagicActiveQuery::className()
             ]
         ];
     }
