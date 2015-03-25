@@ -1,7 +1,7 @@
 <?php
 /* @var $this yii\web\View */
 /* @var $form yii\widgets\ActiveForm */
-/* @var $generator yii\gii\generators\form\Generator */
+/* @var $generator phpshko\magicscopes\gii\model\Generator */
 
 echo $form->field($generator, 'tableName');
 echo $form->field($generator, 'modelClass');
@@ -14,3 +14,5 @@ echo $form->field($generator, 'generateLabelsFromComments')->checkbox();
 echo $form->field($generator, 'enableI18N')->checkbox();
 echo $form->field($generator, 'messageCategory');
 echo $form->field($generator, 'generateMagicScopes')->checkbox();
+echo $form->field($generator, 'createType')->dropDownList($generator->createTypes);
+echo $form->field($generator, 'saveDocType')->radioList($generator->saveDocTypes);

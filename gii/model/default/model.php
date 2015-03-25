@@ -20,6 +20,7 @@ namespace <?= $generator->ns ?>;
 use Yii;
 use yii\db\ActiveQuery;
 use phpshko\magicscopes\MagicScopesBehavior;
+use phpshko\magicscopes\MagicActiveQuery;
 /**
  * This is the model class for table "<?= $generator->generateTableName($tableName) ?>".
  *
@@ -32,8 +33,8 @@ use phpshko\magicscopes\MagicScopesBehavior;
  *
 <?php
     foreach ($tableSchema->columns as $column) {
-        foreach ($generator->getScopesDoc($column->name) as $docString) {
-            echo $docString . "\n";
+        foreach ($generator->getMethodsDocs($column->name) as $method) {
+            echo '* @method ActiveQuery|' . $generator->modelClass . ' ' . $method . "\n";
         }
         echo " *\n";
     }
@@ -49,16 +50,36 @@ use phpshko\magicscopes\MagicScopesBehavior;
 class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . "\n" ?>
 {
 <?php if($generator->generateMagicScopes): ?>
+    <?php if ($generator->isUseMagicQuery()): ?>
     /**
-    * @inheritdoc
-    * @return ActiveQuery|<?= $className . "\n" ?>
-    */
+     * @inheritdoc
+     * @return MagicActiveQuery|<?= $generator->isSaveToAutoComplete() ? 'MagicAutoComplete|' : '' ?><?= $className . "\n" ?>
+     */
+    public static function find()
+    {
+        return new MagicActiveQuery(get_called_class());
+    }
+    <?php elseif($generator->isCreateQuery()): ?>
+    /**
+     * @inheritdoc
+     * @return <?= $className ?>Query|<?= $generator->isSaveToAutoComplete() ? 'MagicAutoComplete|' : '' ?><?= $className . "\n" ?>
+     */
+    public static function find()
+    {
+        return new <?= $className ?>Query(get_called_class());
+    }
+    <?php elseif($generator->isAttachBehavior()): ?>
+    /**
+     * @inheritdoc
+     * @return ActiveQuery|<?= $generator->isSaveToAutoComplete() ? 'MagicAutoComplete|' : '' ?><?= $className . "\n" ?>
+     */
     public static function find()
     {
         $query = parent::find();
         $query->attachBehavior('MagicScopesBehavior', MagicScopesBehavior::className());
         return $query;
     }
+    <?php endif; ?>
 <?php endif; ?>
     /**
      * @inheritdoc

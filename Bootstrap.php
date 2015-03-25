@@ -15,7 +15,7 @@ class Bootstrap implements BootstrapInterface
     public function bootstrap($app)
     {
         if ($app->hasModule('gii')) {
-            $app->getModule('gii')->generators['model'] = 'phpshko\magicscopes\gii\model\Generator';
+            $app->getModule('gii')->generators['magicscopes'] = 'phpshko\magicscopes\gii\model\Generator';
         }
     }
 }

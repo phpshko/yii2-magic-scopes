@@ -1,46 +1,19 @@
 <?php
 
-use phpshko\magicscopes\tests\unit\models\UserWith;
+namespace phpshko\magicscopes\tests\unit;
 
-class MagicScopesExceptionTest extends \yii\codeception\TestCase
+use InvalidArgumentException;
+use stdClass;
+use yii\base\Exception;
+
+class MagicScopesExceptionTest extends TestCaseWrapper
 {
-    public $appConfig = 'config/unit.php';
-
-    protected function setUp()
-    {
-        $this->mockApplication();
-        $this->unloadFixtures();
-        $this->loadFixtures();
-    }
-
-    protected function tearDown()
-    {
-        $this->destroyApplication();
-    }
-
-
-    /**
-     * @var \UnitTester
-     */
-    protected $tester;
-
-    protected function _before()
-    {
-        $this->appConfig = __DIR__ . '/../config/unit.php';
-    }
-
-    protected function _after()
-    {
-    }
-
-    //tests
-
     /**
      * @expectedException        Exception
      */
     public function testNoneAttribute()
     {
-        $query = UserWith::find()->andId2NotIn([12, 12, 13]);
+        $this->findWith()->andId2NotIn([12, 12, 13]);
     }
 
     /**
@@ -49,7 +22,7 @@ class MagicScopesExceptionTest extends \yii\codeception\TestCase
      */
     public function testEqual1()
     {
-        $query = UserWith::find()->andId([12, 12, 13]);
+        $this->findWith()->andId([12, 12, 13]);
     }
 
     /**
@@ -58,7 +31,7 @@ class MagicScopesExceptionTest extends \yii\codeception\TestCase
      */
     public function testEqual2()
     {
-        $query = UserWith::find()->andId(new \stdClass());
+        $this->findWith()->andId(new stdClass());
     }
 
     /**
@@ -67,7 +40,7 @@ class MagicScopesExceptionTest extends \yii\codeception\TestCase
      */
     public function testIn1()
     {
-        $query = UserWith::find()->andIdIn(new \stdClass());
+        $this->findWith()->andIdIn(new stdClass());
     }
 
     /**
@@ -76,7 +49,7 @@ class MagicScopesExceptionTest extends \yii\codeception\TestCase
      */
     public function testIn2()
     {
-        $query = UserWith::find()->andIdIn(5);
+        $this->findWith()->andIdIn(5);
     }
 
     /**
@@ -85,7 +58,7 @@ class MagicScopesExceptionTest extends \yii\codeception\TestCase
      */
     public function testLike1()
     {
-        $query = UserWith::find()->andIdLike([new stdClass()]);
+        $this->findWith()->andIdLike([new stdClass()]);
     }
 
     /**
@@ -94,7 +67,7 @@ class MagicScopesExceptionTest extends \yii\codeception\TestCase
      */
     public function testLike2()
     {
-        $query = UserWith::find()->andIdLike(new stdClass());
+        $this->findWith()->andIdLike(new stdClass());
     }
 
     /**
@@ -103,7 +76,7 @@ class MagicScopesExceptionTest extends \yii\codeception\TestCase
      */
     public function testBetween1()
     {
-        $query = UserWith::find()->andIdBetween(new stdClass());
+        $this->findWith()->andIdBetween(new stdClass());
     }
 
     /**
@@ -112,7 +85,7 @@ class MagicScopesExceptionTest extends \yii\codeception\TestCase
      */
     public function testBetween2()
     {
-        $query = UserWith::find()->andIdBetween(new stdClass(), new stdClass());
+        $this->findWith()->andIdBetween(new stdClass(), new stdClass());
     }
 
     /**
@@ -121,7 +94,7 @@ class MagicScopesExceptionTest extends \yii\codeception\TestCase
      */
     public function testBetween3()
     {
-        $query = UserWith::find()->andIdBetween([1, 5]);
+        $this->findWith()->andIdBetween([1, 5]);
     }
 
     /**
@@ -130,7 +103,7 @@ class MagicScopesExceptionTest extends \yii\codeception\TestCase
      */
     public function testBetween4()
     {
-        $query = UserWith::find()->andIdBetween([1, new stdClass()]);
+        $this->findWith()->andIdBetween([1, new stdClass()]);
     }
 
     /**
@@ -139,7 +112,7 @@ class MagicScopesExceptionTest extends \yii\codeception\TestCase
      */
     public function testMore1()
     {
-        $query = UserWith::find()->andIdMore([1]);
+        $this->findWith()->andIdMore([1]);
     }
 
     /**
@@ -148,7 +121,7 @@ class MagicScopesExceptionTest extends \yii\codeception\TestCase
      */
     public function testMore2()
     {
-        $query = UserWith::find()->andIdMore(new stdClass());
+        $this->findWith()->andIdMore(new stdClass());
     }
 
     /**
@@ -157,7 +130,7 @@ class MagicScopesExceptionTest extends \yii\codeception\TestCase
      */
     public function testLess1()
     {
-        $query = UserWith::find()->andIdLess([1]);
+        $this->findWith()->andIdLess([1]);
     }
 
     /**
@@ -166,7 +139,7 @@ class MagicScopesExceptionTest extends \yii\codeception\TestCase
      */
     public function testLess2()
     {
-        $query = UserWith::find()->andIdLess(new stdClass());
+        $this->findWith()->andIdLess(new stdClass());
     }
 
 }
