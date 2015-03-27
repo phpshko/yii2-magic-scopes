@@ -1,9 +1,4 @@
 <?php
-/**
- * @link http://www.yiiframework.com/
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
- */
 
 namespace phpshko\magicscopes\gii\model;
 
@@ -39,14 +34,14 @@ class Generator extends \yii\gii\generators\model\Generator
     public $saveDocType = self::SAVE_DOC_TO_MODEL;
     public $createType = self::TYPE_MAGIC_QUERY;
 
+    /* Dropdown */
     public $createTypes = [
         self::TYPE_MAGIC_QUERY     => 'Use Magic Query',
         self::TYPE_CREATE_QUERY    => 'Create Query',
         self::TYPE_ATTACH_BEHAVIOR => 'Attach Behavior'
     ];
-
     public $saveDocTypes = [
-        self::SAVE_DOC_TO_MODEL      => 'Save in model',
+        self::SAVE_DOC_TO_MODEL             => 'Save in model',
         self::SAVE_DOC_TO_AUTOCOMPLETE_FILE => 'Save in MagicAutoComplete.php'
     ];
 
@@ -63,7 +58,8 @@ class Generator extends \yii\gii\generators\model\Generator
      */
     public function getDescription()
     {
-        return 'This generator generates an ActiveRecord class for the specified database table, include MagicScopeBehavior and generate autocomplete.';
+        return 'This generator generates an ActiveRecord class for the specified database table,
+                include MagicScopeBehavior and generate autocomplete.';
     }
 
     /**
@@ -71,7 +67,8 @@ class Generator extends \yii\gii\generators\model\Generator
      */
     public function rules()
     {
-        return array_merge(parent::rules(),
+        return array_merge(
+            parent::rules(),
             [
                 [['generateMagicScopes'], 'boolean'],
                 [['createType'], 'in', 'range' => [
@@ -80,7 +77,8 @@ class Generator extends \yii\gii\generators\model\Generator
                 [['saveDocType'], 'in', 'range' => [
                     self::SAVE_DOC_TO_MODEL, self::SAVE_DOC_TO_AUTOCOMPLETE_FILE
                 ]]
-            ]);
+            ]
+        );
     }
 
     /**
@@ -88,9 +86,12 @@ class Generator extends \yii\gii\generators\model\Generator
      */
     public function attributeLabels()
     {
-        return array_merge(parent::attributeLabels(), [
-            'saveDocType' => 'Doc Type'
-        ]);
+        return array_merge(
+            parent::attributeLabels(),
+            [
+                'saveDocType' => 'Doc Type'
+            ]
+        );
     }
 
     /**
@@ -98,25 +99,26 @@ class Generator extends \yii\gii\generators\model\Generator
      */
     public function hints()
     {
-        return array_merge(parent::hints(), [
-
-        ]);
+        return array_merge(
+            parent::hints(),
+            []
+        );
     }
 
     /**
-     * @inheritdoc
+     * @return array
      */
-    public function stickyAttributes()
-    {
-        return array_merge(parent::stickyAttributes(),
-            ['generateMagicScopes', 'saveDocType', 'createType']);
-    }
-
     public function generate()
     {
         $files = [];
         $relations = $this->generateRelations();
         $db = $this->getDbConnection();
+
+        $views = [
+            self::TYPE_MAGIC_QUERY      => '_findMagicQuery',
+            self::TYPE_CREATE_QUERY     => '_findCreateQuery',
+            self::TYPE_ATTACH_BEHAVIOR  => '_findAttachBehavior'
+        ];
 
         foreach ($this->getTableNames() as $tableName) {
             $className = $this->generateClassName($tableName);
@@ -127,23 +129,27 @@ class Generator extends \yii\gii\generators\model\Generator
                 'tableSchema' => $tableSchema,
                 'labels' => $this->generateLabels($tableSchema),
                 'rules' => $this->generateRules($tableSchema),
-                'relations' => isset($relations[$className]) ? $relations[$className] : []
+                'relations' => isset($relations[$className]) ? $relations[$className] : [],
+                'findView' => $views[$this->createType]
             ];
+
+            $pathToDir = Yii::getAlias('@' . str_replace('\\', '/', $this->ns));
+
             $files[] = new CodeFile(
-                Yii::getAlias('@' . str_replace('\\', '/', $this->ns)) . '/' . $className . '.php',
+                $pathToDir . '/' . $className . '.php',
                 $this->render('model.php', $params)
             );
 
-            if($this->isCreateQuery()){
+            if ($this->isCreateQuery()) {
                 $files[] = new CodeFile(
-                    Yii::getAlias('@' . str_replace('\\', '/', $this->ns)) . '/' . $className . 'Query.php',
+                    $pathToDir . '/' . $className . 'Query.php',
                     $this->render('ActiveQuery.php', $params)
                 );
             }
 
             if ($this->isSaveToAutoComplete()) {
-                $filePath = Yii::getAlias('@' . str_replace('\\', '/', $this->ns)) . '/MagicAutoComplete.php';
-                $methods = $this->getNewAutoComplete($filePath);
+                $filePath = $pathToDir . '/MagicAutoComplete.php';
+                $methods = $this->getOldAutoComplete($filePath);
 
                 foreach ($tableSchema->columns as $column) {
                     $methods = array_merge($methods, $this->getMethodsDocs($column->name));
@@ -166,10 +172,11 @@ class Generator extends \yii\gii\generators\model\Generator
 
 
 
-    public function getNewAutoComplete($filePath)
+    public function getOldAutoComplete($filePath)
     {
-        if(file_exists($filePath)){
-            preg_match_all('/\s*\*\s*\@method\s+(?<classes>[^\s]*)\s(?<methods>.*)\s*$/im', file_get_contents($filePath), $regs);
+        if (file_exists($filePath)) {
+            $regex = '/\s*\*\s*\@method\s+(?<classes>[^\s]*)\s(?<methods>.*)\s*$/im';
+            preg_match_all($regex, file_get_contents($filePath), $regs);
             return $regs['methods'];
         }
 
@@ -213,7 +220,7 @@ class Generator extends \yii\gii\generators\model\Generator
 
         $docs = [];
 
-        foreach($this->methodNames as $template){
+        foreach ($this->methodNames as $template) {
             $methodName = lcfirst(str_replace('*', $columnName, $template));
             $varName = lcfirst($columnName);
 
@@ -221,7 +228,7 @@ class Generator extends \yii\gii\generators\model\Generator
                 $signature = '($from, $to)';
             } elseif (stristr($template, 'in')) {
                 $signature = '($array)';
-            } elseif(stristr($template, 'less') || stristr($template, 'more')){
+            } elseif (stristr($template, 'less') || stristr($template, 'more')) {
                 $signature = '($than, $include = false)';
             } else {
                 $signature = '($' . $varName . ')';

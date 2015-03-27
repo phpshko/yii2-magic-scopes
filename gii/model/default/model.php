@@ -11,6 +11,7 @@
 /* @var $labels string[] list of attribute labels (name => label) */
 /* @var $rules string[] list of validation rules */
 /* @var $relations array list of relations (name => relation declaration) */
+/* @var $findView string Name view file for find method */
 
 echo "<?php\n";
 ?>
@@ -34,7 +35,7 @@ use phpshko\magicscopes\MagicActiveQuery;
 <?php
     foreach ($tableSchema->columns as $column) {
         foreach ($generator->getMethodsDocs($column->name) as $method) {
-            echo '* @method ActiveQuery|' . $generator->modelClass . ' ' . $method . "\n";
+            echo ' * @method ActiveQuery|' . $generator->modelClass . ' ' . $method . "\n";
         }
         echo " *\n";
     }
@@ -49,38 +50,10 @@ use phpshko\magicscopes\MagicActiveQuery;
  */
 class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . "\n" ?>
 {
-<?php if($generator->generateMagicScopes): ?>
-    <?php if ($generator->isUseMagicQuery()): ?>
-    /**
-     * @inheritdoc
-     * @return MagicActiveQuery|<?= $generator->isSaveToAutoComplete() ? 'MagicAutoComplete|' : '' ?><?= $className . "\n" ?>
-     */
-    public static function find()
-    {
-        return new MagicActiveQuery(get_called_class());
-    }
-    <?php elseif($generator->isCreateQuery()): ?>
-    /**
-     * @inheritdoc
-     * @return <?= $className ?>Query|<?= $generator->isSaveToAutoComplete() ? 'MagicAutoComplete|' : '' ?><?= $className . "\n" ?>
-     */
-    public static function find()
-    {
-        return new <?= $className ?>Query(get_called_class());
-    }
-    <?php elseif($generator->isAttachBehavior()): ?>
-    /**
-     * @inheritdoc
-     * @return ActiveQuery|<?= $generator->isSaveToAutoComplete() ? 'MagicAutoComplete|' : '' ?><?= $className . "\n" ?>
-     */
-    public static function find()
-    {
-        $query = parent::find();
-        $query->attachBehavior('MagicScopesBehavior', MagicScopesBehavior::className());
-        return $query;
-    }
-    <?php endif; ?>
-<?php endif; ?>
+<?php if ($generator->generateMagicScopes){
+    echo $this->render($findView, ['generator' => $generator, 'className' => $className]) . "\n";
+}
+?>
     /**
      * @inheritdoc
      */

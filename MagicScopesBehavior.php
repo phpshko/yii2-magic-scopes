@@ -20,7 +20,6 @@ class MagicScopesBehavior extends Behavior
 
     protected static $cacheAttributes = [];
 
-
     /**
      * @inheritdoc
      */
@@ -29,7 +28,6 @@ class MagicScopesBehavior extends Behavior
         parent::attach($owner);
         $this->cacheSchema($this->owner->modelClass);
     }
-
 
     /**
      * @param string $name
@@ -40,7 +38,6 @@ class MagicScopesBehavior extends Behavior
         $parse = $this->parseMethodName($name);
         return (bool)$this->getAttributeName($this->owner->modelClass, $parse['attribute']);
     }
-
 
     /**
      * @param string $name
@@ -67,7 +64,6 @@ class MagicScopesBehavior extends Behavior
         }
     }
 
-
     /**
      * @param string $name
      * @return array
@@ -87,7 +83,6 @@ class MagicScopesBehavior extends Behavior
         ];
     }
 
-
     /**
      * @param string $type
      * @param string $params
@@ -100,7 +95,7 @@ class MagicScopesBehavior extends Behavior
             case 'more':
             case 'less':
             case 'like':
-                if(!is_int($params[0]) && !is_string($params[0])){
+                if (!is_int($params[0]) && !is_string($params[0])) {
                     throw new \InvalidArgumentException('Parameter should be string or integer. ' . gettype($params[0]) . ' given');
                 }
                 break;
@@ -110,13 +105,12 @@ class MagicScopesBehavior extends Behavior
                 }
                 break;
             case 'between':
-                if((!is_int($params[0]) && !is_string($params[0])) || (!is_int($params[1]) && !is_string($params[1]))){
+                if ((!is_int($params[0]) && !is_string($params[0])) || (!is_int($params[1]) && !is_string($params[1]))) {
                     throw new \InvalidArgumentException('Both parameters should be string or integer.');
                 }
                 break;
         }
     }
-
 
     /**
      * @param $methodName
@@ -167,7 +161,6 @@ class MagicScopesBehavior extends Behavior
         return $this->owner;
     }
 
-
     /**
      * @param string|\yii\db\ActiveRecord $className
      * @return array
@@ -176,7 +169,6 @@ class MagicScopesBehavior extends Behavior
     {
         return self::$cacheAttributes[$className];
     }
-
 
     /**
      * @param $className
@@ -195,7 +187,6 @@ class MagicScopesBehavior extends Behavior
         return false;
     }
 
-
     /**
      * @param string $str
      * @return string
@@ -204,5 +195,4 @@ class MagicScopesBehavior extends Behavior
     {
         return strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $str));
     }
-
 }

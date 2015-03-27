@@ -11,9 +11,9 @@ use PHPUnit_Framework_TestResult;
 
 /**
  * Class TestCaseWrapper
- * @property UserWithMagicQuery[] $classesWith
- * @property UserWithMagicQuery $classWithout
- * @property UserWithMagicQuery $currentTestClass
+ * @property UserWithMagic[] $classesWith
+ * @property UserWithMagic $classWithout
+ * @property UserWithMagic $currentTestClass
  */
 class TestCaseWrapper extends \yii\codeception\TestCase
 {
@@ -22,6 +22,7 @@ class TestCaseWrapper extends \yii\codeception\TestCase
     public $classesWith = [];
     public $classWithout;
     protected $currentTestClass;
+
 
     protected function setUp()
     {
@@ -46,7 +47,6 @@ class TestCaseWrapper extends \yii\codeception\TestCase
         $this->destroyApplication();
     }
 
-
     /**
      * @var \UnitTester
      */
@@ -58,17 +58,15 @@ class TestCaseWrapper extends \yii\codeception\TestCase
 
     protected function runTest()
     {
-        foreach($this->classesWith as $className){
+        foreach ($this->classesWith as $className) {
             $this->currentTestClass = $className;
             parent::runTest();
         }
     }
 
-
     protected function _after()
     {
     }
-
 
     /**
      * @return UserWithMagic|\yii\db\ActiveQuery
@@ -79,7 +77,6 @@ class TestCaseWrapper extends \yii\codeception\TestCase
         return $class::find();
     }
 
-
     /**
      * @return UserWithout|\yii\db\ActiveQuery
      */
@@ -88,6 +85,4 @@ class TestCaseWrapper extends \yii\codeception\TestCase
         $class = $this->classWithout;
         return $class::find();
     }
-
-
 }

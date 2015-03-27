@@ -24,12 +24,11 @@ namespace <?= $generator->ns ?>;
  *
 <?php
     foreach ($methods as $method) {
-        echo '* @method MagicAutoComplete ' . $method . "\n";
+        echo ' * @method MagicAutoComplete ' . $method . "\n";
     }
 ?>
  */
 <?php endif; ?>
-
 class MagicAutoComplete
 {
 

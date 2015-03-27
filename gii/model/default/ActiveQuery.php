@@ -24,7 +24,7 @@ namespace <?= $generator->ns ?>;
 <?php
     foreach ($tableSchema->columns as $column) {
         foreach ($generator->getMethodsDocs($column->name) as $method) {
-            echo '* @method ' . $className . 'Query|' . $generator->modelClass . ' ' . $method . "\n";
+            echo ' * @method ' . $className . 'Query|' . $generator->modelClass . ' ' . $method . "\n";
         }
         echo " *\n";
     }
@@ -32,7 +32,7 @@ namespace <?= $generator->ns ?>;
  */
 <?php endif; ?>
 
-class <?=$className?>Query extends \yii\db\ActiveQuery
+class <?= $className ?>Query extends \yii\db\ActiveQuery
 {
     /**
      * @inheritdoc
