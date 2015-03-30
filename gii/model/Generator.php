@@ -30,7 +30,6 @@ class Generator extends \yii\gii\generators\model\Generator
     ];
 
     /* Input */
-    public $generateMagicScopes = false;
     public $saveDocType = self::SAVE_DOC_TO_MODEL;
     public $createType = self::TYPE_MAGIC_QUERY;
 
@@ -70,7 +69,6 @@ class Generator extends \yii\gii\generators\model\Generator
         return array_merge(
             parent::rules(),
             [
-                [['generateMagicScopes'], 'boolean'],
                 [['createType'], 'in', 'range' => [
                     self::TYPE_CREATE_QUERY, self::TYPE_MAGIC_QUERY, self::TYPE_ATTACH_BEHAVIOR
                 ]],
@@ -89,19 +87,9 @@ class Generator extends \yii\gii\generators\model\Generator
         return array_merge(
             parent::attributeLabels(),
             [
-                'saveDocType' => 'Doc Type'
+                'createType' => 'Creation Mode',
+                'saveDocType' => 'Save DocBlock to'
             ]
-        );
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function hints()
-    {
-        return array_merge(
-            parent::hints(),
-            []
         );
     }
 
@@ -170,8 +158,10 @@ class Generator extends \yii\gii\generators\model\Generator
         return $files;
     }
 
-
-
+    /**
+     * @param string $filePath
+     * @return array
+     */
     public function getOldAutoComplete($filePath)
     {
         if (file_exists($filePath)) {
@@ -183,27 +173,41 @@ class Generator extends \yii\gii\generators\model\Generator
         return [];
     }
 
-
+    /**
+     * @return bool
+     */
     public function isUseMagicQuery()
     {
         return $this->createType === self::TYPE_MAGIC_QUERY;
     }
 
+    /**
+     * @return bool
+     */
     public function isCreateQuery()
     {
         return $this->createType === self::TYPE_CREATE_QUERY;
     }
 
+    /**
+     * @return bool
+     */
     public function isAttachBehavior()
     {
         return $this->createType === self::TYPE_ATTACH_BEHAVIOR;
     }
 
+    /**
+     * @return bool
+     */
     public function isSaveToModel()
     {
         return $this->saveDocType === self::SAVE_DOC_TO_MODEL;
     }
 
+    /**
+     * @return bool
+     */
     public function isSaveToAutoComplete()
     {
         return $this->saveDocType === self::SAVE_DOC_TO_AUTOCOMPLETE_FILE;

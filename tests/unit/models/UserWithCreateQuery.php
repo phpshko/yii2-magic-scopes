@@ -228,7 +228,6 @@ namespace phpshko\magicscopes\tests\unit\models;
  * @method UserWithCreateQuery|UserWithCreate orAddressId($addressId)
  *
  */
-
 class UserWithCreateQuery extends \yii\db\ActiveQuery
 {
     /**

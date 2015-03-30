@@ -18,7 +18,7 @@ echo "<?php\n";
 
 namespace <?= $generator->ns ?>;
 
-<?php if ($generator->generateMagicScopes && $generator->isSaveToAutoComplete()): ?>
+<?php if ($generator->isSaveToAutoComplete()): ?>
 /**
  * Magic Scopes
  *

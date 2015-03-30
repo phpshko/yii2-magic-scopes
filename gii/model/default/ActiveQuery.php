@@ -17,7 +17,7 @@ echo "<?php\n";
 
 namespace <?= $generator->ns ?>;
 
-<?php if ($generator->generateMagicScopes && $generator->isCreateQuery()): ?>
+<?php if ($generator->isCreateQuery()): ?>
 /**
  * Magic Scopes
  *
@@ -31,7 +31,6 @@ namespace <?= $generator->ns ?>;
 ?>
  */
 <?php endif; ?>
-
 class <?= $className ?>Query extends \yii\db\ActiveQuery
 {
     /**

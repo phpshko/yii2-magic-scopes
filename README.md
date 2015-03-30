@@ -23,101 +23,117 @@ or add
 to the require section of your `composer.json` file.
 
 
-Configuration
+In Gii
 ------------
 
-Overwrite find (default in Gii generator)
-----
+You can generate a model using "Magic Scopes Generator". Will be automatically generated needs PHPDoc and overwrite find() method.
+In this generator, you can select "Creation Mode" and "Save DocBlock to".
 
-```php
-use Yii;
-use yii\db\ActiveQuery;
-use phpshko\magicscopes\MagicScopesBehavior;
-...
 
-    /**
-    * @inheritdoc
-    * @return ActiveQuery|UserWith
-    */
-    public static function find()
-    {
-        $query = parent::find();
-        $query->attachBehavior('MagicScopesBehavior', MagicScopesBehavior::className());
-        return $query;
-    }
-```
+Creation Mode:
+* Use Magic Query
+    ```php
+         * @method ActiveQuery|UserWithMagic orAddressIdNotLike($addressId)
+         * @method ActiveQuery|UserWithMagic orAddressIdNotBetween($from, $to)
+         * @method ActiveQuery|UserWithMagic orAddressIdNotMore($than, $include = false)
+         * @method ActiveQuery|UserWithMagic orAddressIdNotLess($than, $include = false)
+         * @method ActiveQuery|UserWithMagic orAddressId($addressId)
+         *
+         */
+        class UserWithMagic extends \yii\db\ActiveRecord
+        {
+            /**
+             * @inheritdoc
+             * @return MagicActiveQuery|UserWithMagic
+             */
+            public static function find()
+            {
+                return new MagicActiveQuery(get_called_class());
+            }
+    ```
+
+* Create Query
+    ```php
+        /**
+         * This is the model class for table "user".
+         *
+         * @property integer $id
+         * @property string $username
+         * @property string $forename
+         * @property string $surname
+         * @property integer $year
+         * @property integer $address_id
+         */
+        class UserWithCreate extends \yii\db\ActiveRecord
+        {
+            /**
+             * @inheritdoc
+             * @return UserWithCreateQuery|UserWithCreate
+             */
+            public static function find()
+            {
+                return new UserWithCreateQuery(get_called_class());
+            }
+    ```
     
-Or use MagicActiveQuery
-----
+    and automatically create query class, attach behavior, and put PhpDoc
     
-```php
-use phpshko\magicscopes\MagicActiveQuery;
-
-...
-
-/**
- * @inheritdoc
- * @return MagicActiveQuery|ModelClass
- */
-public static function find()
-{
-    return new MagicActiveQuery(get_called_class());
-}
-```
-    
-Or in ActiveQuery
-----
-
-```php
-
-class ActiveQuery extends \yii\db\ActiveQuery
-{
-    /**
-     * @inheritdoc
+    ```php
+    ...
+     * @method UserWithCreateQuery|UserWithCreate orAddressIdNot($addressId)
+     * @method UserWithCreateQuery|UserWithCreate orAddressIdNotIn($array)
+     * @method UserWithCreateQuery|UserWithCreate orAddressIdNotLike($addressId)
+     * @method UserWithCreateQuery|UserWithCreate orAddressIdNotBetween($from, $to)
+     * @method UserWithCreateQuery|UserWithCreate orAddressIdNotMore($than, $include = false)
+     * @method UserWithCreateQuery|UserWithCreate orAddressIdNotLess($than, $include = false)
+     * @method UserWithCreateQuery|UserWithCreate orAddressId($addressId)
+     *
      */
-    public function behaviors()
+    class UserWithCreateQuery extends \yii\db\ActiveQuery
     {
-        return [
-            [
-                'class' => \phpshko\magicscopes\MagicActiveQuery::className()
-            ]
-        ];
+        /**
+         * @inheritdoc
+         */
+        public function behaviors()
+        {
+            return [
+                [
+                    'class' => \phpshko\magicscopes\MagicScopesBehavior::className()
+                ]
+            ];
+        }
     }
-}
-```
+    ```
 
+* Attach Behavior
 
-Usage
-------------
+    ```php
+    ...
+     * @method ActiveQuery|UserWithAttach orAddressIdNotIn($array)
+     * @method ActiveQuery|UserWithAttach orAddressIdNotLike($addressId)
+     * @method ActiveQuery|UserWithAttach orAddressIdNotBetween($from, $to)
+     * @method ActiveQuery|UserWithAttach orAddressIdNotMore($than, $include = false)
+     * @method ActiveQuery|UserWithAttach orAddressIdNotLess($than, $include = false)
+     * @method ActiveQuery|UserWithAttach orAddressId($addressId)
+     *
+     */
+    class UserWithAttach extends \yii\db\ActiveRecord
+    {
+        /**
+         * @inheritdoc
+         * @return ActiveQuery|UserWithAttach
+         */
+        public static function find()
+        {
+            $query = parent::find();
+            $query->attachBehavior('MagicScopesBehavior', MagicScopesBehavior::className());
+            return $query;
+        }    
+    ```
 
-When you will generate Model in Gii generator, select "Generate Magic Scopes". Will be automatically generated needs PHPDoc and overwrite find() method.
+If you select "Save DocBlock to MagicAutoComplete.php", all PhpDoc for this model to be merged with the old data in the file MagicAutoComplete.php (in the same folder as the model)
 
-```php
-/**
- * UserWith model
- *
- * @property integer $id
- * @property string $username
- * @property string $forename
- * @property string $surname
- * @property integer $year
- * @property integer $address_id
- *
- * Magic Scopes
- *
- * @method MagicActiveQuery|UserWith id($id)
- * @method MagicActiveQuery|UserWith idIn($id)
- * @method MagicActiveQuery|UserWith idLike($id)
- * @method MagicActiveQuery|UserWith idBetween($from, $to)
- * @method MagicActiveQuery|UserWith idMore($than, $include = false)
- * @method MagicActiveQuery|UserWith idLess($than, $include = false)
- * @method MagicActiveQuery|UserWith idNot($id)
- * @method MagicActiveQuery|UserWith idNotIn($id)
- */
-```
-
-You can see full example [here](https://github.com/phpshko/yii2-magic-scopes/blob/master/tests/models/UserWith.php).
-Lines a lot, but they will be useful in autocomplete.
+You can see examples of created models with different settings [here](https://github.com/phpshko/yii2-magic-scopes/blob/master/tests/unit/models).
 
 ![PhpStorm autocomplete](http://habrastorage.org/files/157/187/c90/157187c9064d4dcab3e9929e2567231b.png "PhpStorm autocomplete")
 

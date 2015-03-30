@@ -13,6 +13,5 @@ echo $form->field($generator, 'generateRelations')->checkbox();
 echo $form->field($generator, 'generateLabelsFromComments')->checkbox();
 echo $form->field($generator, 'enableI18N')->checkbox();
 echo $form->field($generator, 'messageCategory');
-echo $form->field($generator, 'generateMagicScopes')->checkbox();
 echo $form->field($generator, 'createType')->dropDownList($generator->createTypes);
 echo $form->field($generator, 'saveDocType')->radioList($generator->saveDocTypes);

@@ -28,7 +28,7 @@ use phpshko\magicscopes\MagicActiveQuery;
 <?php foreach ($tableSchema->columns as $column): ?>
  * @property <?= "{$column->phpType} \${$column->name}\n" ?>
 <?php endforeach; ?>
-<?php if($generator->generateMagicScopes): ?>
+<?php if(!$generator->isSaveToAutoComplete() && !$generator->isCreateQuery()): ?>
  *
  * Magic Scopes
  *
@@ -50,10 +50,7 @@ use phpshko\magicscopes\MagicActiveQuery;
  */
 class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . "\n" ?>
 {
-<?php if ($generator->generateMagicScopes){
-    echo $this->render($findView, ['generator' => $generator, 'className' => $className]) . "\n";
-}
-?>
+<?= $this->render($findView, ['generator' => $generator, 'className' => $className]) . "\n"; ?>
     /**
      * @inheritdoc
      */

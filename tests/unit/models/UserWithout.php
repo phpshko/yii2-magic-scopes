@@ -3,9 +3,7 @@
 namespace phpshko\magicscopes\tests\unit\models;
 
 use Yii;
-use yii\db\ActiveQuery;
-use phpshko\magicscopes\MagicScopesBehavior;
-use phpshko\magicscopes\MagicActiveQuery;
+
 /**
  * This is the model class for table "user".
  *
